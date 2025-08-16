@@ -1,24 +1,37 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
+	"log"
 	"mortimer92/ss-oltp/internal/models"
+
+	_ "github.com/lib/pq" // PostgreSQL driver
 )
+
 
 func main() {
 
-	// sensor2 := models.NewSensor("funky_blipper", "a hobbit hole")
-	// fmt.Println("Sensor Name:", sensor.sensorId)
-	// sensorReadings := sensorreadings.NewSensor("funky_blipper", "a hobbit hole")
+	host := "localhost"
+	port := "5432"
+	user := "myuser"
+	password := "mypassword"
+	dbname := "mydatabase"
 
-	// fmt.Println("Sensor Name:", sensorReadings.Name)
+	//construct the conn string
+	connStr := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
-	// // sensor := internal.SensorReadingsSensors.NewSensor("funky_blipper", "a hobbit hole")
-	// // sensorReadings := SensorReadings.NewSensorReading()
+	db, err := sql.Open("postgres", connStr)
+	if err != nil{
+		log.Fatalf("Unable to connect to database: %v\n", err)
+	}
+	defer db.Close()
 
-	// sensorReadings2 := models.NewSensorReading("funky_blipper", "a hobbit hole", 42.0, "2023-10-01T12:00:00Z")
+	err = db.Ping()
+	if err != nil {
+		log.Fatalf("Unable to ping database: %v\n", err)
+	}
 
-	// var sensor models.Sensors
 	sensor := models.NewSensor("funky_blipper", "a hobbit hole")
 
 	sensorReadings := models.NewSensorReading(*sensor)
